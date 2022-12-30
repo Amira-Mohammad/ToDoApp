@@ -39,12 +39,14 @@ function CRUD() {
     setLong(position.coords.longitude);
     console.log(position.coords.latitude, position.coords.longitude);
   };
+  let time = new Date().getTime();
   useEffect(() => {
     setTodoS(stateTodos.todos);
+    getLocation();
     console.log("coordinates", lat, long);
     axios
       .get(
-        `https:api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude={part}&appid=${API_Key}`
+        `https://api.openweathermap.org/data/3.0/onecall/timemachine?lat=${lat}&lon=${long}&dt=${time}&appid=${API_Key}`
       )
       .then((res) => {
         console.log("openweathermap response", res);
