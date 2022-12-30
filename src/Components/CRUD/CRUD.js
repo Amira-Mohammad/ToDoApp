@@ -3,12 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addTodo, deleteTodo, updateTodo } from "../../Redux/TodoSlice";
 import axios from "axios";
 import moment from "moment";
-import {
-  FormControl,
-  InputLabel,
-  Input,
-  FormHelperText,
-} from "@material-ui/core";
+
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -23,9 +18,9 @@ function CRUD() {
   const [updatedTodoTitle, setUpdatedTodoTitle] = useState("");
   const [updatedTodotDes, setUpdatedTodotDes] = useState("");
   const [isEdited, setIsEdited] = useState(false);
-  const [id, setId] = useState(null);
   const [lat, setLat] = useState("");
   const [long, setLong] = useState("");
+  const [id, setId] = useState(null);
 
   const dispatch = useDispatch();
   const stateTodos = useSelector((state) => state.todos);
@@ -42,34 +37,23 @@ function CRUD() {
   const showPosition = (position) => {
     setLat(position.coords.latitude);
     setLong(position.coords.longitude);
-    // console.log(position.coords.latitude, position.coords.longitude);
+    console.log(position.coords.latitude, position.coords.longitude);
   };
-
   useEffect(() => {
     setTodoS(stateTodos.todos);
-    getLocation();
-    //  console.log("lat long", lat, long);
-
+    console.log("coordinates", lat, long);
     axios
       .get(
-        `https:api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&appid=${API_Key}`
+        `https:api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude={part}&appid=${API_Key}`
       )
       .then((res) => {
-        console.log("openweathermap response ", res);
+        console.log("openweathermap response", res);
       });
-  }, []);
+  });
 
   return (
     <div className="todoContainer">
       <form>
-        {/* <FormControl>
-          <InputLabel htmlFor="my-input">Email address</InputLabel>
-          <Input id="my-input" aria-describedby="my-helper-text" />
-          <FormHelperText id="my-helper-text">
-            We'll never share your email.
-          </FormHelperText>
-        </FormControl> */}
-
         <input
           className="form-control-sm"
           type="text"
@@ -113,43 +97,38 @@ function CRUD() {
       <div>
         {todoS.length > 0 ? (
           todoS.map((todo) => (
-            <div
-              className="d-flex justify-content-center flex-column "
-              key={todo.id}
-            >
-              <div className="d-flex justify-content-center">
-                <div className="mx-1">{todo.todoTitle}</div>
-                <div className="mx-1">{todo.todoDes}</div>
-                <div className="mx-1">{todo.createdAt}</div>
+            <div className="d-flex justify-content-center" key={todo.id}>
+              <div className="mx-1">{todo.todoTitle}</div>
+              <div className="mx-1">{todo.todoDes}</div>
+              <div className="mx-1">{todo.createdAt}</div>
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  // className={classes.button}
-                  startIcon={<EditIcon />}
-                  onClick={() => {
-                    setIsEdited(true);
-                    setId(todo.id);
-                  }}
-                >
-                  Edit
-                </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<EditIcon />}
+                onClick={() => {
+                  setIsEdited(true);
+                  setId(todo.id);
+                }}
+              >
+                Edit
+              </Button>
 
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  // className={classes.button}
-                  startIcon={<DeleteIcon />}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    dispatch(deleteTodo(todo.id));
-                  }}
-                >
-                  Delete
-                </Button>
-              </div>
+              <Button
+                variant="contained"
+                color="secondary"
+                startIcon={<DeleteIcon />}
+                onClick={(e) => {
+                  e.preventDefault();
+                  dispatch(deleteTodo(todo.id));
+                }}
+              >
+                Delete
+              </Button>
+
+              <br />
               {isEdited && id == todo.id && (
-                <div className="d-flex justify-content-center">
+                <div>
                   <input
                     className="form-control-sm"
                     type="text"
